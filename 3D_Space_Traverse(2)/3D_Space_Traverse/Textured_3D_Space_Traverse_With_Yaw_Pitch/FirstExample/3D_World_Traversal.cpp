@@ -39,7 +39,14 @@ struct Actor
 	glm::vec2 direction;	//Motion direction
 };
 
+//This client's actor's id
 const int my_id = 101;
+
+///Networking variables - is it okay I did this?
+WSADATA wsaData;
+SOCKET clientSocket;
+sockaddr_in SvrAddr;
+
 
 float wheel_rotation = 0.0f;
 float Actor_velocity = 3.0f;
@@ -100,10 +107,6 @@ bool ActorAlive = true;
 //counting time since start to spawn Actors
 int oldgluttime = -1;
 
-///Networking variables - is it okay I did this?
-WSADATA wsaData;
-SOCKET clientSocket;
-sockaddr_in SvrAddr;
 
 
 
@@ -654,7 +657,6 @@ void serverResponse()
 	//2 - On the other hand, you receive the a scene graph from the sever 
 	//3 - You will need to iterate through the updated scene graph received from the server and update the client-side scene-graph, one by one.
 	//Note: The scene graph on the client side only contains the data for other clients, but not the data for itself. This is illustrated in lab 7 in more details in the instruction file
-	///for (Actor a: scenegraph) where id != this.v.id, update; 
 	//Finally, keep in mind that the game represents a snap-shot of the game-scene.
 	int num_actors = 0;
 	char rvBuffer[9001];
@@ -675,19 +677,12 @@ void serverResponse()
 			updatedsceneGraph.push_back(a);
 		}
 
-	
 
 		auto it = std::find_if(updatedsceneGraph.begin(), updatedsceneGraph.end(), [&](Actor c) {return c.id == my_id; });
 		if (it != updatedsceneGraph.end()) {
 			updatedsceneGraph.erase(it);
 		}
 		sceneGraph = updatedsceneGraph;
-
-
-		
-
-
-
 
 	}
 	else {
@@ -750,5 +745,7 @@ int main(int argc, char** argv)
 
 	glutMainLoop();
 
+	closesocket(clientSocket);
+	WSACleanup();
 }
 

@@ -20,7 +20,6 @@ BTN415-Lab 5
 using namespace std;
 
 
-//Issue: When the client exits, they remain in the gamescene- how can this be fixed?
 
 struct Actor
 {
@@ -56,6 +55,12 @@ void makeGameScene(Actor& a) {
 
 }
 
+void deleteActor(int id) {
+
+	gameScene.erase(std::remove_if(gameScene.begin(), gameScene.end(), [&](Actor a) {return a.id == id; }));
+
+}
+
 void handle_Client(SOCKET s, int id) {
 
 	int flag = 0;
@@ -78,10 +83,12 @@ void handle_Client(SOCKET s, int id) {
 		else if (n == 0) {
 			cout << id << (" Connection closed\n");
 			flag = -1;
+			deleteActor(x.id);
 		}
 		else {
 			cout << "This is the device" << id << " recv failed: " << WSAGetLastError();
 			flag = -1;
+			deleteActor(x.id);
 
 		}
 

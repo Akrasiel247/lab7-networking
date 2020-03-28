@@ -1,4 +1,4 @@
-Mostly finished- have to clarify some things with prof
+finished
 
 when you work on this, you need to download his zip with the client code
 it's configured with everything you need
